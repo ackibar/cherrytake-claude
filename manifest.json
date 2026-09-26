@@ -1,0 +1,63 @@
+{
+  "manifest_version": "0.3",
+  "name": "cherrytake",
+  "display_name": "CherryTake for Premiere Pro",
+  "version": "0.1.0",
+  "description": "Cut silences in Adobe Premiere Pro by asking Claude. Works through the CherryTake panel; cuts go to a copy of the sequence.",
+  "long_description": "CherryTake lets Claude drive the CherryTake panel inside Adobe Premiere Pro. Ask Claude to check the open sequence, analyze silent pauses at one of five cut strengths, cut them and undo the cut. Every cut is made on a new copy of the sequence, so the original is never changed.\n\nRequires Adobe Premiere Pro with the CherryTake panel open. No network access: commands travel through a local folder to the panel.",
+  "author": {
+    "name": "CherryTake",
+    "url": "https://cherrytake.com"
+  },
+  "homepage": "https://cherrytake.com",
+  "support": "https://cherrytake.com",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "src/sunucu.cjs",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/src/sunucu.cjs"
+      ]
+    }
+  },
+  "tools": [
+    {
+      "name": "premiere_status",
+      "description": "Check whether Adobe Premiere Pro is open with the CherryTake panel, and report the active sequence, the current cut strength, whether an analysis is ready and whether the last cut can be undone."
+    },
+    {
+      "name": "analyze_silences",
+      "description": "Analyze the active Premiere sequence for silent pauses with CherryTake."
+    },
+    {
+      "name": "cut_silences",
+      "description": "Cut the silences found by the last analyze_silences call."
+    },
+    {
+      "name": "undo_last_cut",
+      "description": "Undo the last CherryTake cut: reopens the original sequence."
+    }
+  ],
+  "keywords": [
+    "premiere",
+    "video",
+    "editing",
+    "silence",
+    "cut",
+    "adobe"
+  ],
+  "compatibility": {
+    "platforms": [
+      "darwin"
+    ],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "privacy_policies": [
+    "https://cherrytake.com/privacy"
+  ],
+  "license": "MIT"
+}

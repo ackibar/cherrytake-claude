@@ -1,0 +1,8 @@
+test/
+*.log
+.DS_Store
+dist/
+.claude-plugin/
+.mcp.json
+GELISTIRME.md
+.gitignore
