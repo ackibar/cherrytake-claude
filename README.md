@@ -9,8 +9,9 @@ the cut. Every cut is made on a new copy of the sequence, so your original seque
 
 - macOS with Adobe Premiere Pro
 - The CherryTake panel installed and open in Premiere Pro (Window > Extensions > CherryTake Core).
-  CherryTake includes a 7-day free trial; after that, silence cutting needs a CherryTake plan.
-  Claude uses the same licence as the panel and cannot unlock anything the panel has not.
+  CherryTake includes a 7-day free trial; after that, using CherryTake from Claude needs a Pro or
+  Studio plan (the Basic plan covers silence removal in the panel only). Claude uses the same licence
+  as the panel and cannot unlock anything the panel has not.
 - Claude running on the same Mac (Claude Code, or Claude Desktop with the `.mcpb` extension)
 
 ## Tools

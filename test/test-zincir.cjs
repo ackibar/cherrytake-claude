@@ -37,7 +37,7 @@ function panelKur() {
   sb.scopeValue = () => sb.kapsam || 'sequence';
   sb.setMod = (m) => { olaylar.push('mod:' + m); sb.state.mod = m; };
   sb.log = () => {};
-  sb.yetkiler = ['silence'];
+  sb.yetkiler = ['silence', 'claude'];   /* Pro */
   sb.yetkiVarMi = (ad) => sb.yetkiler.includes(ad);
   sb.sessizlikYok = false;
   sb.analyze = () => {
@@ -256,7 +256,16 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
   check('yetkisizken panel işlevi çağrılmadı', P.olaylar.length === once, P.olaylar.slice(once).join(','));
   const kilitD = await S.iste('tools/call', { name: 'premiere_status', arguments: {} });
   check('durum sorgusu lisanssız da çalışır', !kilitD.result.isError, metin(kilitD));
+
+  /* Basic: panelde sessizlik açık ama Claude'dan kullanım yok */
   P.sb.yetkiler = ['silence'];
+  const b0 = P.olaylar.length;
+  const basicA = await S.iste('tools/call', { name: 'analyze_silences', arguments: {} });
+  const basicG = await S.iste('tools/call', { name: 'undo_last_cut', arguments: {} });
+  check('Basic: Claude analizi reddedilir, Pro/Studio önerilir', basicA.result.isError && /Pro and Studio/.test(metin(basicA)), metin(basicA));
+  check('Basic: Claude geri alması reddedilir', basicG.result.isError && /Pro and Studio/.test(metin(basicG)), metin(basicG));
+  check('Basic: panel işlevi çağrılmadı', P.olaylar.length === b0, P.olaylar.slice(b0).join(','));
+  P.sb.yetkiler = ['silence', 'claude'];
 
   check('stdout yalnız JSON-RPC', S.kirli.length === 0, S.kirli.join(' | '));
 
