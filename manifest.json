@@ -1,10 +1,10 @@
 {
   "manifest_version": "0.3",
   "name": "cherrytake",
-  "display_name": "CherryTake for Premiere Pro",
-  "version": "0.1.0",
-  "description": "Cut silences in Adobe Premiere Pro by asking Claude. Works through the CherryTake panel; cuts go to a copy of the sequence.",
-  "long_description": "CherryTake lets Claude drive the CherryTake panel inside Adobe Premiere Pro. Ask Claude to check the open sequence, analyze silent pauses at one of five cut strengths, cut them and undo the cut. Every cut is made on a new copy of the sequence, so the original is never changed.\n\nRequires Adobe Premiere Pro with the CherryTake panel open. No network access: commands travel through a local folder to the panel.",
+  "display_name": "CherryTake for Adobe Premiere Pro",
+  "version": "0.2.0",
+  "description": "Cut silences and place a client's revision notes as markers in Adobe Premiere Pro by asking Claude. Works through the CherryTake panel on your Mac.",
+  "long_description": "CherryTake lets Claude drive the CherryTake panel inside Adobe Premiere Pro. Ask Claude to check the open sequence, analyze silent pauses at one of five cut strengths, cut them and undo the cut. Every cut is made on a new copy of the sequence, so the original is never changed.\n\nPaste a client's revision notes (email, WhatsApp or a list, with or without timecodes) and Claude shows where each note belongs, with candidate places and the reason for each. Markers are added only for the placements you confirm; notes without a reliable place are left for you.\n\nRequires Adobe Premiere Pro with the CherryTake panel open and a Pro or Studio plan (or the 7-day trial). No network access: commands travel through a local folder to the panel.",
   "author": {
     "name": "CherryTake",
     "url": "https://cherrytake.com"
@@ -29,15 +29,23 @@
     },
     {
       "name": "analyze_silences",
-      "description": "Analyze the active Premiere sequence for silent pauses with CherryTake."
+      "description": "Analyze the active Premiere sequence for silent pauses with CherryTake. Does not change the timeline."
     },
     {
       "name": "cut_silences",
-      "description": "Cut the silences found by the last analyze_silences call."
+      "description": "Cut the silences found by the last analysis on a new copy of the sequence."
     },
     {
       "name": "undo_last_cut",
-      "description": "Undo the last CherryTake cut: reopens the original sequence."
+      "description": "Undo the last CherryTake cut: reopens the original sequence; the cut copy stays in the project."
+    },
+    {
+      "name": "propose_note_markers",
+      "description": "Find where a client's revision notes belong in the active sequence, with candidate places and reasons. Does not change the timeline."
+    },
+    {
+      "name": "place_note_markers",
+      "description": "Add markers for the note placements the user confirmed."
     }
   ],
   "keywords": [
@@ -46,6 +54,8 @@
     "editing",
     "silence",
     "cut",
+    "markers",
+    "revision notes",
     "adobe"
   ],
   "compatibility": {

@@ -165,7 +165,7 @@ test('zaman asimindan sonra gelen yanit (yeni panel): atilir, alt kutu kalmaz, p
   const S = sunucuBaslat(kok, { CHERRYTAKE_CLAUDE_UZUN_MS: '400' });
   await bekle(150);
   const r = await S.arac('analyze_silences');
-  assert.ok(!basarili(r) && /did not answer/.test(metin(r)), metin(r));
+  assert.ok(!basarili(r) && /did not finish within .*may still be running/.test(metin(r)), metin(r));
   assert.deepEqual(altKutular(ortak), [], 'zaman asiminda bekleyen kalmadiysa alt kutu silinmeli');
   await bekle(1400);   /* panel simdi yanit veriyor */
   assert.deepEqual(kutuIcerigi(ortak), [], 'gec yanit hicbir kutuda kalmamali');
@@ -214,7 +214,9 @@ test('yeni sunucu + eski panel: iki sunucu ortak kutuda yalniz kendi yanitini al
   fs.mkdirSync(ortak, { recursive: true });
   const yabanci = path.join(ortak, '9-yabanci.json');
   fs.writeFileSync(yabanci, JSON.stringify({ v: 1, id: '9-yabanci', from: 'premiere', cmd: 'x', replyTo: 'baskasinin-komutu' }));
-  const ortam = { CHERRYTAKE_CLAUDE_KISA_MS: '4000' };
+  /* eski panel ortak kutuyu tarayarak cevapliyor; 6 es zamanli istekte yuklu
+     makinede 4 sn sinirina birkac ms ile takiliyordu (olculdu: 4161 ms) */
+  const ortam = { CHERRYTAKE_CLAUDE_KISA_MS: '10000' };
   const A = sunucuBaslat(kok, ortam), B = sunucuBaslat(kok, ortam);
   await bekle(150);
   const istekler = [];

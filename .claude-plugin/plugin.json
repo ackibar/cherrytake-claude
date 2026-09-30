@@ -1,10 +1,20 @@
 {
   "name": "cherrytake",
   "displayName": "CherryTake",
-  "version": "0.1.0",
-  "description": "Cut silences in Adobe Premiere Pro by asking Claude. Drives the CherryTake panel on your Mac; every cut goes to a copy of the sequence.",
-  "author": { "name": "CherryTake", "url": "https://cherrytake.com" },
+  "version": "0.2.0",
+  "description": "Cut silences and place a client's revision notes as markers in Adobe Premiere Pro by asking Claude. Drives the CherryTake panel on your Mac; every cut goes to a copy of the sequence.",
+  "author": {
+    "name": "CherryTake",
+    "url": "https://cherrytake.com"
+  },
   "homepage": "https://cherrytake.com",
   "license": "MIT",
-  "keywords": ["premiere", "video-editing", "silence-removal", "adobe", "cherrytake"]
+  "keywords": [
+    "premiere",
+    "video-editing",
+    "silence-removal",
+    "markers",
+    "adobe",
+    "cherrytake"
+  ]
 }

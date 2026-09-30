@@ -2,7 +2,9 @@ test/
 *.log
 .DS_Store
 dist/
+araclar/
 .claude-plugin/
 .mcp.json
 GELISTIRME.md
 .gitignore
+package.json

@@ -132,7 +132,7 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
 
   const liste = await S.iste('tools/list', {});
   const adlar = (liste.result.tools || []).map(t => t.name).sort();
-  check('dört araç listelenir', JSON.stringify(adlar) === JSON.stringify(['analyze_silences', 'cut_silences', 'premiere_status', 'undo_last_cut']), adlar.join(','));
+  check('altı araç listelenir', JSON.stringify(adlar) === JSON.stringify(['analyze_silences', 'cut_silences', 'place_note_markers', 'premiere_status', 'propose_note_markers', 'undo_last_cut']), adlar.join(','));
   check('her araçta title ve dizinin istediği işaret var',
     liste.result.tools.every(t => t.annotations && t.annotations.title &&
       (t.annotations.readOnlyHint === true || t.annotations.destructiveHint === true)),
@@ -265,7 +265,16 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
   check('Basic: Claude analizi reddedilir, Pro/Studio önerilir', basicA.result.isError && /Pro and Studio/.test(metin(basicA)), metin(basicA));
   check('Basic: Claude geri alması reddedilir', basicG.result.isError && /Pro and Studio/.test(metin(basicG)), metin(basicG));
   check('Basic: panel işlevi çağrılmadı', P.olaylar.length === b0, P.olaylar.slice(b0).join(','));
+  check('lisans reddi "Analysis failed:" önekiyle bulanıklaşmaz', /^Using CherryTake from Claude/.test(metin(basicA)), metin(basicA));
+  const basicD = await S.iste('tools/call', { name: 'premiere_status', arguments: {} });
+  check('Basic: durum lisansın Claude kullanımını içermediğini söyler', /Licence: does not include CherryTake from Claude/.test(metin(basicD)), metin(basicD));
   P.sb.yetkiler = ['silence', 'claude'];
+
+  const durumPro = await S.iste('tools/call', { name: 'premiere_status', arguments: {} });
+  check('Pro (notes yok): durum Notes\'un dahil olmadığını söyler', /Licence: includes CherryTake from Claude \(Notes not included\)/.test(metin(durumPro)), metin(durumPro));
+  const kotuKip = await S.iste('tools/call', { name: 'cut_silences', arguments: { mode: 'shred' } });
+  check('geçersiz kesim kipi sunucuda reddedilir', kotuKip.result.isError && /mode must be one of/.test(metin(kotuKip)), metin(kotuKip));
+  check('panel kapalı metni doğru menü adını verir', /Window > Extensions > CherryTake Core/.test(metin(kapali)), metin(kapali));
 
   check('stdout yalnız JSON-RPC', S.kirli.length === 0, S.kirli.join(' | '));
 

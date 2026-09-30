@@ -12,6 +12,23 @@ panele gider, yanıt `bus/claude/` kutusundan döner.
 | `analyze_silences` | Sessizlik analizi (kademe 1-5, kapsam). Zaman çizgisine dokunmaz |
 | `cut_silences` | Son analizi keser (ripple / lift / marker). Kesim KOPYA sekansta yapılır |
 | `undo_last_cut` | Orijinal sekansı açar; kesim kopyası projede kalır, hiçbir şey silinmez |
+| `propose_note_markers` | Notes: notları ayırır, panelin yerel eşleşme motoruyla aday + gerekçe döndürür. Zaman çizgisine dokunmaz |
+| `place_note_markers` | Yalnız kullanıcının onayladığı (not, aday) çiftlerini işaretçiye yazar (`user_confirmed: true` şart) |
+
+Notes kuralı (notes-belirsizlik-kurali): aday listesinde olmayan zaman ve "yer bulunamadı" notu yazılamaz;
+sekans öneriden sonra değiştiyse yazılmaz; aynı not iki kez yazılmaz. İşaretçi biçimi panelin
+`notlariIsaretciyeYaz`'ı ile birebir aynı (`[efn]` damgası; test bunu gerçek main.js ile karşılaştırır).
+
+İşaretçiyi bu depo DEĞİL, panelin `claude-kopru.js`'indeki `isaretciKur` kurar; sunucu yalnız
+(not, aday) çiftini iletir. Bu yüzden main.js'te biçim değişince düzeltme panel dosyasına gider.
+30 Eyl: Notes v2 ile main.js işaretçiye `id` alanı ve comments sonuna `\n[efn-id:<id>]` ekledi.
+Kimlik `notAnahtarUret`: `(gonderen|metin)` küçük harf + boşluk tekleme → djb2-xor (`h*33 ^ c`, 5381,
+>>>0) → `'n' + base36`; aynı listede çakışırsa `-2`, `-3`. Aynı nottan hep aynı kimlik çıkar. İsim başına
+`notEylemEtiketi(r)` (yalnız Beta açıkken, `[Renk, Kes]` gibi) da ekleniyor. `claude-kopru.js` henüz
+eski biçimde → `notlar-gercek-panel.test.cjs` düşer; panele uygulanacak yama: `id` + `[efn-id]` +
+eylem etiketi, kimlik öneri sırasıyla `g('notAnahtarUret')` ile (yoksa aynı algoritmanın kopyası).
+Yamalı panel kopyasıyla (`CHERRYTAKE_PANEL=<kopya> npm test`) 33/33 + zincir geçti.
+Yetki: `claude` + `notes` birlikte. Panelin yapay zeka adımı (notlar-ai.js) Claude yolunda kullanılmaz.
 
 Panel tarafı: `~/Documents/pyEdit-kaynak/js/claude-kopru.js`. Claude komutları panelin kendi
 düğme işlevlerini (`analyze`, `cut`, `undoLastCut`) çağırır, yani elle kesimle aynı kod yolu.
@@ -24,17 +41,22 @@ düğme işlevlerini (`analyze`, `cut`, `undoLastCut`) çağırır, yani elle ke
 
 `dist/cherrytake-<sürüm>.mcpb` dosyasına çift tıkla. Claude Desktop kendi Node'unu kullanır, PATH gerekmez.
 
-Paketi yeniden üretmek (sürümü `manifest.json` ve `src/sunucu.cjs` içindeki `SURUM`'da birlikte artır):
+Paketi yeniden üretmek (sürümü `manifest.json`, `.claude-plugin/plugin.json`, `package.json` ve
+`src/sunucu.cjs` içindeki `SURUM`'da birlikte artır):
 
-    npx @anthropic-ai/mcpb validate manifest.json
-    npx @anthropic-ai/mcpb pack . dist/cherrytake-$(node -p "require('./manifest.json').version").mcpb
+    npm run pack        # -> dist/cherrytake.mcpb
 
-`manifest.json` içindeki `tools` listesi `ARACLAR` ile aynı adları taşımalı. `test/` ve `dist/` pakete girmez (`.mcpbignore`).
+`araclar/paketle.cjs` önce tutarlılığı denetler (dört sürüm aynı mı, manifest `tools` adları sunucunun
+`tools/list`'iyle aynı mı; `test/paket.test.cjs` de aynısını ağsız sınar), sonra resmi CLI ile
+(`npx @anthropic-ai/mcpb@2.1.2 validate` + `pack`) paketler. İlk çalıştırmada ağ gerekir; npm önbelleği
+geçici klasöre yönlenir (~/.npm'deki root sahipli dosyalar yüzünden). `test/`, `dist/`, `araclar/`,
+`package.json` pakete girmez (`.mcpbignore`). Manifest şeması: MCPB 0.3 (CLI 2.1.2'de "latest" = 0.3).
 
 ## Test
 
-    node test/test-zincir.cjs
+    npm test            # test-zincir.cjs + test/*.test.cjs
 
+Panel yolu `CHERRYTAKE_PANEL` ile değiştirilebilir (varsayılan `~/Documents/pyEdit-kaynak`).
 Premiere gerekmez: sunucuyu gerçek süreç olarak açar, panelin gerçek `kutuphane.js` +
 `claude-kopru.js` dosyalarını sahte panel işlevleriyle çalıştırır.
 

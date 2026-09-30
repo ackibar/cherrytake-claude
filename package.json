@@ -1,0 +1,14 @@
+{
+  "name": "cherrytake-claude",
+  "version": "0.2.0",
+  "private": true,
+  "description": "CherryTake for Claude: MCP server that drives the CherryTake panel in Adobe Premiere Pro",
+  "license": "MIT",
+  "main": "src/sunucu.cjs",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node src/sunucu.cjs",
+    "test": "node test/test-zincir.cjs && node --test test/*.test.cjs",
+    "pack": "node araclar/paketle.cjs"
+  }
+}

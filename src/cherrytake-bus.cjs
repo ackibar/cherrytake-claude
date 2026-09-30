@@ -25,6 +25,7 @@
     var KOMUT_OMRU = 60000;      /* bayat komut: Premiere kapanip acilinca gec yerlesmesin */
     var TARAMA_ARALIK = 1500;    /* fs.watch kacirirsa diye yedek tarama */
     var YENIDEN_KUR = 10000;     /* bozulan fs.watch'i yeniden kurmayi deneme araligi */
+    var EN_BUYUK_KOMUT = 2097152; /* 2 MB: daha buyuk komut dosyasi okunmaz, atilir */
 
     /* ---------- klasorler ---------- */
 
@@ -70,12 +71,29 @@
     }
 
     function ensureDir(dir) {
-        try { fs.mkdirSync(dir, { recursive: true }); return true; }
+        try { fs.mkdirSync(dir, { recursive: true, mode: 448 }); return true; }   /* 0700 */
         catch (e) { try { return fs.existsSync(dir); } catch (e2) { return false; } }
     }
 
-    function presenceDir() { var d = path.join(sharedDir(), 'presence'); ensureDir(d); return d; }
-    function busDir(hedef) { var d = path.join(sharedDir(), 'bus', hedef); ensureDir(d); return d; }
+    /*
+     * Posta kutusu ve kalp atisi klasorleri yalniz kullanicinin (0700): baska
+     * bir hesap komut birakamasin, okuyamasin. Onceden 0755 kurulmus klasor
+     * surec basina bir kez daraltilir. Windows'ta izin bitleri yok, atlanir.
+     */
+    var daraltilan = {};
+    function ozelKlasor(dir) {
+        ensureDir(dir);
+        if (daraltilan[dir] || process.platform === 'win32') return dir;
+        daraltilan[dir] = true;
+        try {
+            var st = fs.lstatSync(dir);
+            if (st.isDirectory() && (st.mode & 63) !== 0) fs.chmodSync(dir, 448);
+        } catch (e) {}
+        return dir;
+    }
+
+    function presenceDir() { return ozelKlasor(path.join(sharedDir(), 'presence')); }
+    function busDir(hedef) { ozelKlasor(path.join(sharedDir(), 'bus')); return ozelKlasor(path.join(sharedDir(), 'bus', hedef)); }
 
     function gecerliAd(ad) {
         if (!UYGULAMALAR.hasOwnProperty(String(ad))) throw new Error('Bilinmeyen CherryTake uygulamasi: ' + ad);
@@ -90,8 +108,9 @@
      * deseninin aynisi).
      */
     function atomikYaz(hedefYol, veri) {
-        var tmp = hedefYol + '.' + Date.now() + '.tmp';
-        fs.writeFileSync(tmp, veri);
+        /* 'wx': onceden konmus bir dosya/sembolik bag izlenmez; 0600: yalniz kullanici */
+        var tmp = hedefYol + '.' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.tmp';
+        fs.writeFileSync(tmp, veri, { mode: 384, flag: 'wx' });
         try { fs.renameSync(tmp, hedefYol); }
         catch (e) { try { fs.unlinkSync(tmp); } catch (e2) {} throw e; }
     }
@@ -230,11 +249,15 @@
             try { fs.renameSync(tam, benim); }
             catch (e) { continue; }   /* baskasi aldi */
 
+            /* yalniz duz dosya ve makul boyut: sembolik bag, klasor, dev dosya atilir */
             var mesaj = null;
-            try { mesaj = JSON.parse(fs.readFileSync(benim, 'utf8')); }
-            catch (e) { mesaj = null; }
+            try {
+                var st = fs.lstatSync(benim);
+                if (st.isFile() && st.size <= EN_BUYUK_KOMUT) mesaj = JSON.parse(fs.readFileSync(benim, 'utf8'));
+            } catch (e) { mesaj = null; }
             try { fs.unlinkSync(benim); } catch (e) {}
-            if (!mesaj || !mesaj.cmd) continue;   /* bozuk dosya: at, cokme */
+            /* bozuk ya da bicimsiz dosya: at, cokme */
+            if (!mesaj || typeof mesaj !== 'object' || typeof mesaj.cmd !== 'string' || !mesaj.cmd || mesaj.cmd.length > 64) continue;
 
             try {
                 handler(mesaj, function (yanit) { try { return reply(mesaj, yanit, { from: self }); } catch (e) { return null; } });
@@ -341,6 +364,7 @@
         KOMUT_OMRU: KOMUT_OMRU,
         TARAMA_ARALIK: TARAMA_ARALIK,
         YENIDEN_KUR: YENIDEN_KUR,
+        EN_BUYUK_KOMUT: EN_BUYUK_KOMUT,
         sharedDir: sharedDir,
         presenceDir: presenceDir,
         busDir: busDir,
