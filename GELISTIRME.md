@@ -64,3 +64,14 @@ Premiere gerekmez: sunucuyu gerçek süreç olarak açar, panelin gerçek `kutup
 
 `src/cherrytake-bus.cjs` diğer dört depodaki kopyayla birebir aynı olmalı
 (`~/editflow-launcher/araclar/ortak-esit.sh`). Bu kopyada uygulama listesine `claude` eklendi.
+
+## ChatGPT masaüstü / Codex (30 Eyl)
+
+Aynı sunucu. `.codex-plugin/plugin.json` + `.codex-mcp.json` (Claude'un `.mcp.json`'u `${CLAUDE_PLUGIN_ROOT}`
+kullandığı için ayrı dosya; `mcpServers` alanı yolu gösteriyor) + `.agents/plugins/marketplace.json`
+(depo kökü yerel pazar). Başlatıcı `bin/cherrytake-mcp`: ChatGPT.app içindeki `cua_node` (v24) → sistem node.
+Yazan araçlar `approval_mode = "prompt"`; `araclar/tutarlilik.cjs` bunu ve beşinci sürümü denetler.
+Doğrulama modelsiz ve ücretsiz: `codex app-server` (stdio JSON-RPC) → `initialize` → `mcpServerStatus/list`
+(`serverName`) ve `thread/start {ephemeral:true}` → `mcpServer/tool/call`. Eklentiyi denemek için geçici
+`CODEX_HOME` ile `codex plugin marketplace add <depo>` + `codex plugin add cherrytake@cherrytake`.
+codex yolu: `/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex`.

@@ -1,5 +1,5 @@
 /*
- * Paket tutarlılığı: sürümler ve araç adları dört yerde aynı olmalı.
+ * Paket tutarlılığı: sürümler ve araç adları beş yerde aynı olmalı.
  * Hem `npm run pack` hem test/paket.test.cjs kullanır.
  */
 'use strict';
@@ -35,15 +35,26 @@ function sunucuAraclari() {
 async function denetle() {
   const sorun = [];
   const man = oku('manifest.json'), eklenti = oku('.claude-plugin/plugin.json'), pk = oku('package.json');
+  const codex = oku('.codex-plugin/plugin.json'), codexMcp = oku(codex.mcpServers || './.codex-mcp.json');
   const { araclar, surum } = await sunucuAraclari();
-  const surumler = { 'manifest.json': man.version, 'plugin.json': eklenti.version, 'package.json': pk.version, 'sunucu.cjs SURUM': surum };
+  const surumler = { 'manifest.json': man.version, 'plugin.json': eklenti.version, 'package.json': pk.version, '.codex-plugin/plugin.json': codex.version, 'sunucu.cjs SURUM': surum };
   if (new Set(Object.values(surumler)).size !== 1) sorun.push('sürümler farklı: ' + JSON.stringify(surumler));
   const a = araclar.map(t => t.name).sort(), b = (man.tools || []).map(t => t.name).sort();
   if (JSON.stringify(a) !== JSON.stringify(b)) sorun.push('manifest tools ' + b.join(',') + ' <> sunucu ' + a.join(','));
   if (man.server.entry_point !== 'src/sunucu.cjs' || !fs.existsSync(path.join(KOK, man.server.entry_point))) sorun.push('entry_point yok: ' + man.server.entry_point);
   if (man.icon && !fs.existsSync(path.join(KOK, man.icon))) sorun.push('simge yok: ' + man.icon);
+  /* ChatGPT/Codex eklentisi: başlatıcı çalıştırılabilir, onay gerektiren araçlar sunucuda gerçekten var */
+  const cs = (codexMcp.mcpServers || {}).cherrytake;
+  if (!cs) sorun.push('.codex-mcp.json cherrytake sunucusu yok');
+  else {
+    const bas = path.join(KOK, cs.command);
+    try { fs.accessSync(bas, fs.constants.X_OK); } catch (e) { sorun.push('başlatıcı çalıştırılamıyor: ' + cs.command); }
+    for (const ad of Object.keys(cs.tools || {})) if (!a.includes(ad)) sorun.push('.codex-mcp.json bilinmeyen araç: ' + ad);
+    const yazan = araclar.filter(t => !(t.annotations && t.annotations.readOnlyHint)).map(t => t.name);
+    for (const ad of yazan) if (!(cs.tools && cs.tools[ad] && cs.tools[ad].approval_mode === 'prompt')) sorun.push('yazan araç onaysız: ' + ad);
+  }
   const yoksay = fs.readFileSync(path.join(KOK, '.mcpbignore'), 'utf8').split('\n').map(s => s.trim());
-  for (const g of ['test/', 'dist/', 'araclar/']) if (!yoksay.includes(g)) sorun.push('.mcpbignore ' + g + ' içermiyor');
+  for (const g of ['test/', 'dist/', 'araclar/', '.codex-plugin/', '.codex-mcp.json', '.agents/', 'bin/']) if (!yoksay.includes(g)) sorun.push('.mcpbignore ' + g + ' içermiyor');
   return sorun;
 }
 

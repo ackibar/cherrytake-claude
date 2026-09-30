@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "cherrytake": {
+      "command": "./bin/cherrytake-mcp",
+      "args": [],
+      "cwd": ".",
+      "env_vars": ["HOME", "PATH", "CODEX_MCP_NODE_PATH", "CODEX_ELECTRON_RESOURCES_PATH", "CODEX_CLI_PATH", "XDG_CACHE_HOME"],
+      "startup_timeout_sec": 20,
+      "tool_timeout_sec": 600,
+      "default_tools_approval_mode": "writes",
+      "tools": {
+        "cut_silences": { "approval_mode": "prompt" },
+        "undo_last_cut": { "approval_mode": "prompt" },
+        "place_note_markers": { "approval_mode": "prompt" }
+      }
+    }
+  }
+}

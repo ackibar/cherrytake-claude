@@ -18,7 +18,7 @@ you; Claude never marks a guess.
   CherryTake includes a 7-day free trial; after that, using CherryTake from Claude needs a Pro or
   Studio plan (the Basic plan covers silence removal in the panel only). Claude uses the same licence
   as the panel and cannot unlock anything the panel has not.
-- Claude running on the same Mac (Claude Code, or Claude Desktop with the `.mcpb` extension)
+- Claude running on the same Mac (Claude Code, or Claude Desktop with the `.mcpb` extension), or the ChatGPT desktop app for Mac (see "Use with ChatGPT desktop")
 
 ## Tools
 
@@ -50,6 +50,34 @@ Examples:
      `/plugin` instead.
 3. Ask Claude "Is Premiere ready for CherryTake?" – it calls `premiere_status` and tells you what it sees,
    including whether your licence covers using CherryTake from Claude.
+
+## Use with ChatGPT desktop
+
+The same server works with the ChatGPT desktop app for Mac (and the Codex CLI, which shares its settings).
+MCP tools are available in ChatGPT's Work/Codex mode. The launcher `bin/cherrytake-mcp` uses the Node.js
+runtime that ships inside ChatGPT.app, so you do not need to install Node.js; if it cannot find it, it
+falls back to a Node.js 18+ on your PATH.
+
+1. Install CherryTake from <https://cherrytake.com> and open the panel in Premiere Pro
+   (Window > Extensions > CherryTake Core).
+2. Download or clone this repository, for example to `~/cherrytake-claude`.
+3. Add the server, using one of these:
+   - **Settings:** in ChatGPT open Settings > MCP servers > Add server, choose **STDIO**, and enter
+     - Name: `cherrytake`
+     - Command: `/Users/<you>/cherrytake-claude/bin/cherrytake-mcp` (full path, no arguments)
+   - **Plugin:** in Terminal run
+     `codex plugin marketplace add ~/cherrytake-claude` and then `codex plugin add cherrytake@cherrytake`
+     (`codex` is inside the app: `/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex`).
+     The plugin asks for approval before every tool that changes your project
+     (`cut_silences`, `undo_last_cut`, `place_note_markers`).
+   - **Config file:** add to `~/.codex/config.toml`
+
+     ```toml
+     [mcp_servers.cherrytake]
+     command = "/Users/<you>/cherrytake-claude/bin/cherrytake-mcp"
+     default_tools_approval_mode = "writes"
+     ```
+4. Restart ChatGPT, start a new Work/Codex chat and ask "Is Premiere ready for CherryTake?".
 
 ## How it works
 

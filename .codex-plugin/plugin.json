@@ -1,0 +1,29 @@
+{
+  "name": "cherrytake",
+  "version": "0.2.0",
+  "description": "Cut silences and place a client's revision notes as markers in Adobe Premiere Pro by asking ChatGPT. Drives the CherryTake panel on your Mac; every cut goes to a copy of the sequence.",
+  "author": {
+    "name": "CherryTake",
+    "url": "https://cherrytake.com"
+  },
+  "homepage": "https://cherrytake.com",
+  "license": "MIT",
+  "keywords": ["premiere", "video-editing", "silence-removal", "markers", "adobe", "cherrytake"],
+  "mcpServers": "./.codex-mcp.json",
+  "interface": {
+    "displayName": "CherryTake",
+    "shortDescription": "Cut silences and place client notes in Premiere Pro",
+    "longDescription": "CherryTake lets ChatGPT check Adobe Premiere Pro, analyze silences, cut them on a copy of the sequence, undo the last cut, and place a client's revision notes as markers after you confirm each one. Requires the CherryTake Core panel open in Premiere Pro on this Mac.",
+    "developerName": "CherryTake",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://cherrytake.com",
+    "logo": "./icon.png",
+    "defaultPrompt": [
+      "Is Premiere ready for CherryTake?",
+      "Analyze the silences in my sequence",
+      "Place these client notes as markers"
+    ],
+    "brandColor": "#9F1239"
+  }
+}

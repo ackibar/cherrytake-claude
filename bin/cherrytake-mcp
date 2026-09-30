@@ -1,0 +1,35 @@
+#!/bin/sh
+# CherryTake MCP server launcher for the ChatGPT desktop app / Codex.
+# Uses the Node runtime that ships inside ChatGPT.app, so the user does not need Node installed.
+# Falls back to a system Node (>=18) if the bundled one is not found.
+set -eu
+
+dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+server="$dir/../src/sunucu.cjs"
+
+PATH="${PATH:-/usr/bin:/bin}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+export PATH
+
+codex_resources=
+case "${CODEX_CLI_PATH:-}" in
+  */Contents/Resources/*) codex_resources=${CODEX_CLI_PATH%%/Contents/Resources/*}/Contents/Resources ;;
+esac
+
+for candidate in \
+  "${CHERRYTAKE_NODE:-}" \
+  "${CODEX_MCP_NODE_PATH:-}" \
+  "${CODEX_ELECTRON_RESOURCES_PATH:-}/cua_node/bin/node" \
+  "$codex_resources/cua_node/bin/node" \
+  "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node" \
+  "${HOME:-}/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node" \
+  "${XDG_CACHE_HOME:-${HOME:-}/.cache}/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+do
+  case "$candidate" in /*) [ -x "$candidate" ] && exec "$candidate" "$server" ;; esac
+done
+
+if node_path=$(command -v node 2>/dev/null); then
+  exec "$node_path" "$server"
+fi
+
+printf '%s\n' 'CherryTake: no Node runtime found. Update the ChatGPT app or install Node 18+ from nodejs.org.' >&2
+exit 127

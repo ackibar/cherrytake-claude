@@ -8,3 +8,7 @@ araclar/
 GELISTIRME.md
 .gitignore
 package.json
+.codex-plugin/
+.codex-mcp.json
+.agents/
+bin/
