@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "cherrytake": {
-      "command": "./bin/cherrytake-mcp",
+      "command": "./codex/cherrytake-mcp",
       "args": [],
       "cwd": ".",
       "env_vars": ["HOME", "PATH", "CODEX_MCP_NODE_PATH", "CODEX_ELECTRON_RESOURCES_PATH", "CODEX_CLI_PATH", "XDG_CACHE_HOME"],

@@ -69,7 +69,7 @@ Premiere gerekmez: sunucuyu gerçek süreç olarak açar, panelin gerçek `kutup
 
 Aynı sunucu. `.codex-plugin/plugin.json` + `.codex-mcp.json` (Claude'un `.mcp.json`'u `${CLAUDE_PLUGIN_ROOT}`
 kullandığı için ayrı dosya; `mcpServers` alanı yolu gösteriyor) + `.agents/plugins/marketplace.json`
-(depo kökü yerel pazar). Başlatıcı `bin/cherrytake-mcp`: ChatGPT.app içindeki `cua_node` (v24) → sistem node.
+(depo kökü yerel pazar). Başlatıcı `codex/cherrytake-mcp`: ChatGPT.app içindeki `cua_node` (v24) → sistem node.
 Yazan araçlar `approval_mode = "prompt"`; `araclar/tutarlilik.cjs` bunu ve beşinci sürümü denetler.
 Doğrulama modelsiz ve ücretsiz: `codex app-server` (stdio JSON-RPC) → `initialize` → `mcpServerStatus/list`
 (`serverName`) ve `thread/start {ephemeral:true}` → `mcpServer/tool/call`. Eklentiyi denemek için geçici

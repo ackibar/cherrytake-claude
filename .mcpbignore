@@ -11,4 +11,4 @@ package.json
 .codex-plugin/
 .codex-mcp.json
 .agents/
-bin/
+codex/

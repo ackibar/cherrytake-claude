@@ -54,7 +54,7 @@ async function denetle() {
     for (const ad of yazan) if (!(cs.tools && cs.tools[ad] && cs.tools[ad].approval_mode === 'prompt')) sorun.push('yazan araç onaysız: ' + ad);
   }
   const yoksay = fs.readFileSync(path.join(KOK, '.mcpbignore'), 'utf8').split('\n').map(s => s.trim());
-  for (const g of ['test/', 'dist/', 'araclar/', '.codex-plugin/', '.codex-mcp.json', '.agents/', 'bin/']) if (!yoksay.includes(g)) sorun.push('.mcpbignore ' + g + ' içermiyor');
+  for (const g of ['test/', 'dist/', 'araclar/', '.codex-plugin/', '.codex-mcp.json', '.agents/', 'codex/']) if (!yoksay.includes(g)) sorun.push('.mcpbignore ' + g + ' içermiyor');
   return sorun;
 }
 

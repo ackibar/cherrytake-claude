@@ -54,7 +54,7 @@ Examples:
 ## Use with ChatGPT desktop
 
 The same server works with the ChatGPT desktop app for Mac (and the Codex CLI, which shares its settings).
-MCP tools are available in ChatGPT's Work/Codex mode. The launcher `bin/cherrytake-mcp` uses the Node.js
+MCP tools are available in ChatGPT's Work/Codex mode. The launcher `codex/cherrytake-mcp` uses the Node.js
 runtime that ships inside ChatGPT.app, so you do not need to install Node.js; if it cannot find it, it
 falls back to a Node.js 18+ on your PATH.
 
@@ -64,7 +64,7 @@ falls back to a Node.js 18+ on your PATH.
 3. Add the server, using one of these:
    - **Settings:** in ChatGPT open Settings > MCP servers > Add server, choose **STDIO**, and enter
      - Name: `cherrytake`
-     - Command: `/Users/<you>/cherrytake-claude/bin/cherrytake-mcp` (full path, no arguments)
+     - Command: `/Users/<you>/cherrytake-claude/codex/cherrytake-mcp` (full path, no arguments)
    - **Plugin:** in Terminal run
      `codex plugin marketplace add ~/cherrytake-claude` and then `codex plugin add cherrytake@cherrytake`
      (`codex` is inside the app: `/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex`).
@@ -74,7 +74,7 @@ falls back to a Node.js 18+ on your PATH.
 
      ```toml
      [mcp_servers.cherrytake]
-     command = "/Users/<you>/cherrytake-claude/bin/cherrytake-mcp"
+     command = "/Users/<you>/cherrytake-claude/codex/cherrytake-mcp"
      default_tools_approval_mode = "writes"
      ```
 4. Restart ChatGPT, start a new Work/Codex chat and ask "Is Premiere ready for CherryTake?".
