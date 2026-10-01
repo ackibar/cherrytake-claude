@@ -78,7 +78,7 @@ function panelKur() {
   vm.runInContext(fs.readFileSync(path.join(KOK, 'src', 'cherrytake-bus.cjs'), 'utf8'), sb);
   vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'kutuphane.js'), 'utf8'), sb);
   vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'claude-kopru.js'), 'utf8'), sb);
-  sb.pyKutuphane.baslat({
+  (sb.ctKutuphane || sb.pyKutuphane).baslat({
     bus: sb.cherrytakeBus,
     evalHost: (betik, cb) => cb({ ok: true, sequence: sb.sekansAdi || 'Röportaj', fps: 25, tpf: 10160640000 }),
     yetkiVarMi: () => true,
@@ -215,7 +215,7 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
   check('Claude hiçbir ayarı panelin kayıtlı ayarına yazmadı (quiet)', !P.olaylar.some(o => /:KAYIT$/.test(o)), P.olaylar.join(','));
 
   /* eski sunucu (alan göndermeyen) yeni panelle konuşursa: köprü kendisi doldurur */
-  const eskiSunucu = (m) => new Promise(coz => { kullaniciAyari(); P.sb.pyClaude.isle(m, coz); });
+  const eskiSunucu = (m) => new Promise(coz => { kullaniciAyari(); (P.sb.ctClaude || P.sb.pyClaude).isle(m, coz); });
   let y = await eskiSunucu({ cmd: 'claude.analiz' });
   check('köprü: alan yoksa level 3 + sequence', y.ok && P.sb.state.level === 3 && y.scope === 'sequence', JSON.stringify(y));
   y = await eskiSunucu({ cmd: 'claude.analiz', level: 4 });
@@ -232,7 +232,7 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
   check('cut parametresiz: ripple', !kesV.result.isError && P.olaylar[P.olaylar.length - 1] === 'cut:ripple', P.olaylar.slice(-3).join(','));
   await analizEt({});
   P.el.mode.value = 'ripple';
-  const kesE = await new Promise(coz => P.sb.pyClaude.isle({ cmd: 'claude.kes' }, coz));
+  const kesE = await new Promise(coz => (P.sb.ctClaude || P.sb.pyClaude).isle({ cmd: 'claude.kes' }, coz));
   check('köprü cut: alan yoksa ripple', kesE.ok && kesE.mode === 'ripple', JSON.stringify(kesE));
   P.sb.state.backup = null;
 
@@ -279,7 +279,7 @@ const metin = r => (r.result && r.result.content && r.result.content[0].text) ||
   check('stdout yalnız JSON-RPC', S.kirli.length === 0, S.kirli.join(' | '));
 
   S.cp.stdin.end();
-  P.sb.pyKutuphane.durdur();
+  (P.sb.ctKutuphane || P.sb.pyKutuphane).durdur();
   fs.rmSync(PAYLASILAN, { recursive: true, force: true });
   console.log(fail ? '\n' + fail + ' HATA' : '\nHepsi geçti.');
   process.exit(fail ? 1 : 0);

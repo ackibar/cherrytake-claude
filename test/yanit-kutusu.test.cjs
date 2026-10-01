@@ -71,13 +71,13 @@ function panelKur(kok, secenek = {}) {
   vm.runInContext(fs.readFileSync(BUS, 'utf8'), sb);
   vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'kutuphane.js'), 'utf8'), sb);
   vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'claude-kopru.js'), 'utf8'), sb);
-  sb.pyKutuphane.baslat({
+  (sb.ctKutuphane || sb.pyKutuphane).baslat({
     bus: sb.cherrytakeBus,
     evalHost: (b, cb) => cb({ ok: true, sequence: 'Röportaj', fps: 25, tpf: 10160640000 }),
     yetkiVarMi: () => true,
     log: () => {}
   });
-  temizlenecek.push(() => sb.pyKutuphane.durdur());
+  temizlenecek.push(() => (sb.ctKutuphane || sb.pyKutuphane).durdur());
   return sb;
 }
 
@@ -249,7 +249,7 @@ test('yeni panel: gecersiz replyBox ortak kutuya duser, silinmis alt kutu yenide
   const sb = panelKur(kok);
   const sor = (m) => new Promise(coz => {
     const yedek = (y) => { coz({ yol: 'ortak', y }); return null; };
-    sb.pyClaude.isle(Object.assign({ v: 1, id: '1-x', from: 'claude', ts: Date.now() }, m), yedek);
+    (sb.ctClaude || sb.pyClaude).isle(Object.assign({ v: 1, id: '1-x', from: 'claude', ts: Date.now() }, m), yedek);
     setTimeout(() => coz({ yol: 'yok' }), 300);
   });
   /* yol gezintisi denemesi: ozel kutuya yazilmaz, ortak yanitciya duser */

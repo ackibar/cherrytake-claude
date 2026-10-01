@@ -53,11 +53,11 @@ function panel(sekansId) {
 const paneller = [];
 /* kutuphane.js ve main.js zamanlayıcı kuruyor; pyEdit testleri gibi açık kapat */
 after(() => {
-  for (const sb of paneller) { try { sb.pyKutuphane.durdur(); } catch (e) {} }
+  for (const sb of paneller) { try { (sb.ctKutuphane || sb.pyKutuphane).durdur(); } catch (e) {} }
   setTimeout(() => process.exit(process.exitCode || 0), 100).unref();
 });
 
-const claude = (sb, mesaj) => new Promise(coz => sb.pyClaude.isle(mesaj, coz));
+const claude = (sb, mesaj) => new Promise(coz => (sb.ctClaude || sb.pyClaude).isle(mesaj, coz));
 
 test('gerçek main.js: öneri + yerleştirme, işaretçi panelin kendi düğmesininkiyle aynı', async () => {
   const sekans = { deger: 'seq-1' };

@@ -92,7 +92,7 @@ function panelKur(kok, secenek = {}) {
     vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'notlar.js'), 'utf8'), sb);
     vm.runInContext(fs.readFileSync(path.join(PANEL, 'js', 'notlar-esle.js'), 'utf8'), sb);
   }
-  sb.pyKutuphane.baslat({
+  (sb.ctKutuphane || sb.pyKutuphane).baslat({
     bus: sb.cherrytakeBus,
     evalHost: (b, cb) => cb({ ok: true, sequence: sb.aktif.sequence, fps: 25, tpf: 10160640000 }),
     yetkiVarMi: () => true,
@@ -137,7 +137,7 @@ function sunucuBaslat(kok) {
 let simdiki = null;
 function kapat() {
   if (!simdiki) return;
-  try { simdiki.sb.pyKutuphane.durdur(); } catch (e) {}
+  try { (simdiki.sb.ctKutuphane || simdiki.sb.pyKutuphane).durdur(); } catch (e) {}
   try { simdiki.S.cp.kill('SIGKILL'); } catch (e) {}
   simdiki = null;
 }
