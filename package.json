@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "description": "CherryTake for Claude: MCP server that drives the CherryTake panel in Adobe Premiere Pro",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "src/sunucu.cjs",
   "engines": { "node": ">=18" },
   "scripts": {

@@ -107,4 +107,4 @@ Email [support@cherrytake.com](mailto:support@cherrytake.com) or visit <https://
 
 ## License
 
-MIT – see [LICENSE](LICENSE).
+Proprietary – free to install and use with CherryTake; see [LICENSE](LICENSE).
