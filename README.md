@@ -16,7 +16,7 @@ you; Claude never marks a guess.
 - macOS with Adobe Premiere Pro
 - The CherryTake panel installed and open in Premiere Pro (Window > Extensions > CherryTake Core).
   CherryTake includes a 7-day free trial; after that, using CherryTake from Claude needs a Pro or
-  Studio plan (the Basic plan covers silence removal in the panel only). Claude uses the same licence
+  Studio plan (the Basic plan covers the panel's tools, not Claude). Claude uses the same licence
   as the panel and cannot unlock anything the panel has not.
 - Claude running on the same Mac (Claude Code, or Claude Desktop with the `.mcpb` extension), or the ChatGPT desktop app for Mac (see "Use with ChatGPT desktop")
 
@@ -42,7 +42,7 @@ Examples:
 1. Install CherryTake from <https://cherrytake.com> and open the panel in Premiere Pro
    (Window > Extensions > CherryTake Core).
 2. Add the connector to Claude on the same Mac:
-   - **Claude Desktop:** download `cherrytake.mcpb` and double-click it (or drag it onto Claude Desktop's
+   - **Claude Desktop:** download `cherrytake.mcpb` from <https://cherrytake.com/download> and double-click it (or drag it onto Claude Desktop's
      Settings > Extensions page), then click Install. Claude Desktop runs it with its built-in Node.js.
    - **Claude Code:** clone this repository and run
      `claude mcp add cherrytake -- node /path/to/cherrytake-claude/src/sunucu.cjs` (Node.js 18 or later).
